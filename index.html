@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toti Estética Integral - Sistema de Gestión & Turnero</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom Theme Colors and Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        toti: {
+                            50: '#faf6f3',
+                            100: '#f4ece5',
+                            200: '#e7d8ca',
+                            300: '#d7bea9',
+                            400: '#c3a085',
+                            500: '#b08668',
+                            600: '#9d6f54',
+                            700: '#7e5743',
+                            800: '#67473a',
+                            900: '#553c33',
+                            gold: '#c5a059',
+                            rose: '#e8b4b8'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fcf9f6;
+            color: #4a3e3d;
+        }
+        .font-serif {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f4ece5;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d7bea9;
+            border-radius: 4px;
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #c5a059 0%, #d4af37 50%, #b38b40 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(231, 216, 202, 0.6);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row bg-[#faf6f3] text-gray-800">
+
+    <!-- Mobile Header -->
+    <header class="md:hidden bg-white/90 backdrop-blur border-b border-toti-200 p-4 sticky top-0 z-40 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-toti-100 flex items-center justify-center border border-toti-300">
+                <span class="font-serif font-bold text-toti-700 text-lg">t</span>
+            </div>
+            <div>
+                <h1 class="font-serif font-bold text-lg text-toti-800 leading-none">toti</h1>
+                <p class="text-[10px] text-toti-500 uppercase tracking-widest font-semibold">estética integral</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <select id="branchSelectMobile" onchange="switchBranch(this.value)" class="bg-toti-50 text-toti-800 text-xs font-semibold px-2.5 py-1.5 rounded-full border border-toti-300 focus:outline-none">
+                <option value="Chascomús">📍 Chascomús</option>
+                <option value="Ramos Mejía">📍 Ramos Mejía</option>
+            </select>
+            <button onclick="toggleMobileMenu()" class="p-2 text-toti-700 hover:bg-toti-100 rounded-lg">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Desktop Sidebar Navigation -->
+    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-white border-r border-toti-200 z-50 flex flex-col justify-between shadow-xl md:shadow-none">
+        <div>
+            <!-- Sidebar Header / Logo -->
+            <div class="p-6 border-b border-toti-100 text-center relative">
+                <button onclick="toggleMobileMenu()" class="md:hidden absolute right-4 top-4 text-toti-500">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+                <div class="w-16 h-16 rounded-full bg-toti-50 border-2 border-toti-300 flex items-center justify-center mx-auto mb-3 shadow-inner">
+                    <span class="font-serif text-3xl font-bold text-toti-700">toti</span>
+                </div>
+                <h2 class="font-serif text-2xl font-bold text-toti-800 tracking-wide">TOTI</h2>
+                <p class="text-xs uppercase tracking-widest text-toti-500 font-semibold mt-0.5">Estética Integral</p>
+                <div class="inline-flex items-center gap-1 mt-2 px-3 py-1 bg-toti-100 text-toti-700 text-xs rounded-full font-medium">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span id="currentBranchBadge">Sede Chascomús</span>
+                </div>
+            </div>
+
+            <!-- Branch Selector Desktop -->
+            <div class="p-4 border-b border-toti-100">
+                <label class="block text-xs font-semibold text-toti-600 uppercase tracking-wider mb-2">Seleccionar Sucursal</label>
+                <select id="branchSelectDesktop" onchange="switchBranch(this.value)" class="w-full bg-toti-50 text-toti-800 text-sm font-semibold px-3 py-2 rounded-xl border border-toti-200 focus:outline-none focus:ring-2 focus:ring-toti-400">
+                    <option value="Chascomús">📍 Belgrano 354 - Chascomús</option>
+                    <option value="Ramos Mejía">📍 Alsina 248 - Ramos Mejía</option>
+                </select>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="p-4 space-y-1">
+                <button onclick="showSection('publicView')" id="nav-publicView" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-toti-800 hover:bg-toti-100 bg-toti-100 font-semibold">
+                    <i data-lucide="globe" class="w-5 h-5 text-toti-600"></i>
+                    <span>Catálogo & Turnero Público</span>
+                </button>
+                <button onclick="showSection('agenda')" id="nav-agenda" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-toti-700 hover:bg-toti-100">
+                    <i data-lucide="calendar" class="w-5 h-5 text-toti-600"></i>
+                    <span>Control de Agenda</span>
+                </button>
+                <button onclick="showSection('stock')" id="nav-stock" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-toti-700 hover:bg-toti-100">
+                    <i data-lucide="package" class="w-5 h-5 text-toti-600"></i>
+                    <span>Stock e Insumos</span>
+                </button>
+                <button onclick="showSection('crm')" id="nav-crm" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-toti-700 hover:bg-toti-100">
+                    <i data-lucide="users" class="w-5 h-5 text-toti-600"></i>
+                    <span>Fichas de Clientes</span>
+                </button>
+                <button onclick="showSection('stats')" id="nav-stats" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-toti-700 hover:bg-toti-100">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5 text-toti-600"></i>
+                    <span>Estadísticas & Métricas</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="p-4 border-t border-toti-100 bg-toti-50/50">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold text-toti-800">Demo SaaS v2.4</p>
+                    <p class="text-[10px] text-toti-500">Exclusivo Toti Estética</p>
+                </div>
+                <span class="px-2 py-0.5 text-[10px] bg-toti-200 text-toti-800 rounded font-bold">VIP</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 overflow-y-auto min-h-screen p-4 md:p-8 custom-scrollbar">
+        
+        <!-- ================= SECCIÓN 1: VISTA PÚBLICA / CATALOGO ================= -->
+        <section id="publicViewSection" class="space-y-6 max-w-6xl mx-auto">
+            <!-- Banner Promocional Estética -->
+            <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-toti-800 via-toti-700 to-toti-900 text-white p-6 md:p-10 shadow-lg">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <div class="relative z-10 max-w-2xl">
+                    <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur text-toti-100 text-xs uppercase tracking-widest rounded-full mb-3 font-semibold">Reserva tu momento de relax</span>
+                    <h2 class="font-serif text-3xl md:text-5xl font-bold leading-tight mb-3">Reserva de Turnos Online</h2>
+                    <p class="text-toti-100 text-sm md:text-base font-light mb-6">Selecciona el tratamiento ideal para vos. Atención personalizada en nuestras sedes de Chascomús y Ramos Mejía.</p>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="filterServices('all')" class="service-tab-btn active px-4 py-2 rounded-full text-xs font-semibold bg-white text-toti-800 transition">Todos</button>
+                        <button onclick="filterServices('facial')" class="service-tab-btn px-4 py-2 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition">Faciales & LED</button>
+                        <button onclick="filterServices('headspa')" class="service-tab-btn px-4 py-2 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition">Head Spa & Masajes</button>
+                        <button onclick="filterServices('nails')" class="service-tab-btn px-4 py-2 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition">Manicuría & Capping</button>
+                        <button onclick="filterServices('combo')" class="service-tab-btn px-4 py-2 rounded-full text-xs font-semibold bg-white/20 text-white hover:bg-white/30 transition">Gift Cards & Combos</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid de Tratamientos -->
+            <div id="servicesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Se poblará dinámicamente con JS -->
+            </div>
+        </section>
+
+        <!-- ================= SECCIÓN 2: CONTROL DE AGENDA (ADMIN) ================= -->
+        <section id="agendaSection" class="hidden space-y-6 max-w-6xl mx-auto">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-toti-200 shadow-sm">
+                <div>
+                    <h2 class="font-serif text-2xl font-bold text-toti-800">Control de Agenda Diaria</h2>
+                    <p class="text-xs text-toti-600">Turnos agendados para <span id="agendaDateText" class="font-bold">Hoy</span> en <span class="currentBranchText text-toti-800 font-semibold">Chascomús</span></p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input type="date" id="agendaDatePicker" onchange="updateAgendaView()" class="bg-toti-50 border border-toti-300 text-toti-800 text-xs rounded-xl p-2.5 font-medium focus:outline-none">
+                    <button onclick="openBookingModal()" class="px-4 py-2.5 bg-toti-700 hover:bg-toti-800 text-white text-xs font-semibold rounded-xl flex items-center gap-2 shadow-sm transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span>Nuevo Turno</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filtros de Profesionales -->
+            <div class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar" id="professionalFilter">
+                <button onclick="filterAgendaByStaff('all')" class="staff-filter-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-toti-700 text-white whitespace-nowrap">Todas las Profesionales</button>
+                <button onclick="filterAgendaByStaff('Toti')" class="staff-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white text-toti-700 border border-toti-200 whitespace-nowrap">Toti (Especialista)</button>
+                <button onclick="filterAgendaByStaff('Sofía')" class="staff-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white text-toti-700 border border-toti-200 whitespace-nowrap">Sofía (Faciales/Masajes)</button>
+                <button onclick="filterAgendaByStaff('Camila')" class="staff-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white text-toti-700 border border-toti-200 whitespace-nowrap">Camila (Manicuría)</button>
+            </div>
+
+            <!-- Timeline de Turnos -->
+            <div class="bg-white rounded-2xl border border-toti-200 shadow-sm overflow-hidden">
+                <div class="p-4 bg-toti-50 border-b border-toti-100 flex justify-between items-center text-xs font-semibold text-toti-600">
+                    <span>Horario & Cliente</span>
+                    <span>Estado / Acción</span>
+                </div>
+                <div id="agendaList" class="divide-y divide-toti-100">
+                    <!-- Se poblará dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECCIÓN 3: CONTROL DE STOCK E INSUMOS ================= -->
+        <section id="stockSection" class="hidden space-y-6 max-w-6xl mx-auto">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-toti-200 shadow-sm">
+                <div>
+                    <h2 class="font-serif text-2xl font-bold text-toti-800">Inventario & Consumo por Gabinete</h2>
+                    <p class="text-xs text-toti-600">Gestión de insumos y productos retail en <span class="currentBranchText text-toti-800 font-semibold">Chascomús</span></p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <div class="flex gap-2">
+                        <button onclick="toggleStockType('gabinete')" id="stockTypeGabineteBtn" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-toti-700 text-white">Uso Gabinete</button>
+                        <button onclick="toggleStockType('retail')" id="stockTypeRetailBtn" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-toti-100 text-toti-700">Venta Retail</button>
+                    </div>
+                    <button onclick="openProductModal()" class="px-4 py-2 bg-toti-800 hover:bg-toti-900 text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 shadow-sm transition">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                        <span>Nuevo Producto / Insumo</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard de alertas rápidas -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-white p-4 rounded-2xl border border-toti-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-toti-500 font-medium">Total Productos</p>
+                        <h3 id="totalStockCount" class="text-xl font-bold text-toti-800">18</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-toti-100 flex items-center justify-center text-toti-700">
+                        <i data-lucide="boxes" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-amber-200 bg-amber-50/30 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-amber-700 font-medium">Stock Bajo</p>
+                        <h3 id="lowStockCount" class="text-xl font-bold text-amber-800">3 insumos</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-700">
+                        <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-green-200 bg-green-50/30 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-green-700 font-medium">Auto-Descuento activo</p>
+                        <h3 class="text-sm font-bold text-green-800">Por sesión realizada</h3>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-700">
+                        <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Stock -->
+            <div class="bg-white rounded-2xl border border-toti-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-toti-50 text-toti-700 font-semibold border-b border-toti-100">
+                            <tr>
+                                <th class="p-4">Producto / Insumo</th>
+                                <th class="p-4">Categoría</th>
+                                <th class="p-4">Tipo / Sucursal</th>
+                                <th class="p-4">Cantidad</th>
+                                <th class="p-4">Precio / Costo</th>
+                                <th class="p-4">Estado</th>
+                                <th class="p-4 text-center">Acciones Rápidas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockTableBody" class="divide-y divide-toti-100">
+                            <!-- Se puebla dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECCIÓN 4: FICHA DE CLIENTES (CRM) ================= -->
+        <section id="crmSection" class="hidden space-y-6 max-w-6xl mx-auto">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-toti-200 shadow-sm">
+                <div>
+                    <h2 class="font-serif text-2xl font-bold text-toti-800">Fichas de Clientes & Historial Estético</h2>
+                    <p class="text-xs text-toti-600">Seguimiento de tratamientos, piel, alergias y fotos Antes/Después</p>
+                </div>
+                <div class="relative w-full sm:w-64">
+                    <input type="text" id="searchClientInput" onkeyup="searchClients()" placeholder="Buscar cliente por nombre..." class="w-full bg-toti-50 border border-toti-200 text-xs rounded-xl pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-toti-400">
+                    <i data-lucide="search" class="w-4 h-4 text-toti-400 absolute left-3 top-3"></i>
+                </div>
+            </div>
+
+            <!-- Grid de Clientes -->
+            <div id="crmClientsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Se puebla dinámicamente -->
+            </div>
+        </section>
+
+        <!-- ================= SECCIÓN 5: ESTADÍSTICAS & METRICAS ================= -->
+        <section id="statsSection" class="hidden space-y-6 max-w-6xl mx-auto">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-toti-200 shadow-sm">
+                <div>
+                    <h2 class="font-serif text-2xl font-bold text-toti-800">Métricas & Rendimiento</h2>
+                    <p class="text-xs text-toti-600">Resultados consolidados de la sucursal <span class="currentBranchText text-toti-800 font-semibold">Chascomús</span></p>
+                </div>
+                <span class="px-3 py-1 bg-toti-100 text-toti-800 text-xs font-semibold rounded-full">Mes en curso (Octubre)</span>
+            </div>
+
+            <!-- Tarjetas KPIs -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-toti-200 shadow-sm">
+                    <p class="text-xs text-toti-500 font-medium">Facturación Estimada</p>
+                    <h3 id="kpiRevenue" class="text-2xl font-bold text-toti-800 mt-1">$1.480.000</h3>
+                    <p class="text-[11px] text-green-600 flex items-center gap-1 mt-2">
+                        <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> +18% vs mes anterior
+                    </p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-toti-200 shadow-sm">
+                    <p class="text-xs text-toti-500 font-medium">Turnos Completados</p>
+                    <h3 id="kpiAppointments" class="text-2xl font-bold text-toti-800 mt-1">142</h3>
+                    <p class="text-[11px] text-toti-600 mt-2">94% de asistencia</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-toti-200 shadow-sm">
+                    <p class="text-xs text-toti-500 font-medium">Tratamiento Estrella</p>
+                    <h3 id="kpiTopService" class="text-lg font-bold text-toti-800 mt-1 truncate">Limpieza Facial Premium</h3>
+                    <p class="text-[11px] text-toti-600 mt-2">48 sesiones realizadas</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-toti-200 shadow-sm">
+                    <p class="text-xs text-toti-500 font-medium">Ocupación Agenda</p>
+                    <h3 id="kpiOccupancy" class="text-2xl font-bold text-toti-800 mt-1">87%</h3>
+                    <p class="text-[11px] text-green-600 mt-2">Horarios pico: 16:00 - 19:00</p>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Gráfico de ventas por servicio -->
+                <div class="bg-white p-6 rounded-2xl border border-toti-200 shadow-sm">
+                    <h3 class="font-serif text-lg font-bold text-toti-800 mb-4">Servicios más Solicitados</h3>
+                    <div class="h-64">
+                        <canvas id="servicesChart"></canvas>
+                    </div>
+                </div>
+                <!-- Gráfico de distribución de ingresos -->
+                <div class="bg-white p-6 rounded-2xl border border-toti-200 shadow-sm">
+                    <h3 class="font-serif text-lg font-bold text-toti-800 mb-4">Comparativa Sucursales (Ingresos)</h3>
+                    <div class="h-64">
+                        <canvas id="branchesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= MODAL DE RESERVA DE TURNO ================= -->
+    <div id="bookingModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-toti-200 relative animate-in fade-in zoom-in duration-200">
+            <button onclick="closeBookingModal()" class="absolute right-4 top-4 text-toti-400 hover:text-toti-800">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 rounded-full bg-toti-100 flex items-center justify-center mx-auto mb-2 text-toti-700">
+                    <i data-lucide="calendar-heart" class="w-6 h-6"></i>
+                </div>
+                <h3 class="font-serif text-2xl font-bold text-toti-800">Reservar Turno</h3>
+                <p class="text-xs text-toti-500">Completa los datos para confirmar en <span id="modalBranchName" class="font-semibold text-toti-700">Chascomús</span></p>
+            </div>
+
+            <form onsubmit="confirmBooking(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-toti-700 mb-1">Tratamiento o Servicio</label>
+                    <select id="modalServiceSelect" class="w-full bg-toti-50 border border-toti-200 text-xs rounded-xl p-3 text-toti-800 font-medium focus:outline-none focus:ring-2 focus:ring-toti-400">
+                        <!-- Llenado dinámicamente -->
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-toti-700 mb-1">Fecha</label>
+                        <input type="date" id="modalDate" required class="w-full bg-toti-50 border border-toti-200 text-xs rounded-xl p-3 text-toti-800 font-medium focus:outline-none focus:ring-2 focus:ring-toti-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-toti-700 mb-1">Hora</label>
+                        <select id="modalTime" class="w-full bg-toti-50 border border-toti-200 text-xs rounded-xl p-3 text-toti-800 font-medium focus:outline-none">
+                            <option value="09:00">09:00 hs</option>
+                            <option value="10:30">10:30 hs</option>
+                            <option value="14:00">14:00 hs</option>
+                            <option value="16:00">16:00 hs</option>
+                            <option value="17:30">17:30 hs</option>
+                            <option value="19:00">19:00 hs</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-toti-700 mb-1">Profesional Preferida</label>
+                    <select id="modalStaff" class="w-full bg-toti-50 border border-toti-200 text-xs rounded-xl p-3 text-toti-800 font-medium focus:outline-none">
+                        <option value="Toti">Toti (Especialista)</option>
+                        <option value="Sofía">Sofía (Cosmiatra / Masajes)</option>
+                        <option value="Camila">Camila (Manicuría)</option>
+                    </select>
+                </div>
+
+                <div class="space-y-2 pt-2 border-t border-toti-100">
+                    <label class="block text-xs font-semibold text-toti-700">Tus Datos de Contacto</label>
+                    <input type="text" id="modalClientName" placeholder="Nombre y Apellido" required class="w-full bg-toti-50 border border-toti-200 text-xs rounded-xl p-3 text-toti-800 focus:outline-none">
+                    <input type="tel" id="modalClientPhone" placeholder="Teléfono / WhatsApp" required class="w-full bg-toti-50 border border-toti-200 text-xs rounded-xl p-3 text-toti-800 focus:outline-none">
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-toti-700 hover:bg-toti-800 text-white font-semibold rounded-xl text-xs uppercase tracking-wider shadow-md transition">
+                    Confirmar Reserva
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL HISTORIAL COMPLETO CRM -->
+    <div id="crmModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-toti-200 relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <button onclick="closeCrmModal()" class="absolute right-4 top-4 text-toti-400 hover:text-toti-800">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div id="crmModalContent">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL DE CREACIÓN / EDICIÓN DE PRODUCTO ================= -->
+    <div id="productModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-toti-200 relative animate-in fade-in zoom-in duration-200">
+            <button onclick="closeProductModal()" class="absolute right-4 top-4 text-toti-400 hover:text-toti-800">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="text-center mb-5">
+                <div class="w-12 h-12 rounded-full bg-toti-100 flex items-center justify-center mx-auto mb-2 text-toti-700">
+                    <i data-lucide="package-plus" class="w-6 h-6"></i>
+                </div>
+                <h3 id="productModalTitle" class="font-serif text-2xl font-bold text-toti-800">Nuevo Producto / Insumo</h3>
+                <p class="text-xs text-toti-500">Agrega o modifica elementos en el catálogo de inventario</p>
+            </div>
+
+            <form onsubmit="saveProduct(event)" class="space-y-3.5">
+                <input type="hidden" id="prodEditId">
+                <div>
+                    <label class="block text-xs font-semibold text-toti-700 mb-1">Nombre del Producto / Insumo</label>
+                    <input type="text" id="prodName" required placeholder="Ej. Sérum Vitamina C 30ml" class="w-full bg-toti-50 border border-toti-200 text-xs rounded-xl p-3 text-toti-800 focus:outline-none focus:ring-2 focus:ring-toti-400">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-toti-700 mb-1">Tipo de Inventario</label>
+                        <select id="prodType" onchange="togglePriceCostLabel()" class="w-full bg-toti-50 border border-toti-200 text-xs rounded-xl p-3 text-toti-800 font-medium focus:outline-none">
+                            <option value="gabinete">Uso Gabinete</option>
+                            <option value="retail">Venta Retail</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-toti-700 mb-1">Rubro / Categoría</label>
+                        <select id="prodCat" class="w-full bg-toti-50 border border-toti-200 text-xs rounded-xl p-3 text-toti-800 font-medium focus:outline-none">
+                            <option value="Facial">Facial</option>
+                            <option value="Head Spa">Head Spa</option>
+                            <option value="Uñas">Uñas / Manicuría</option>
+                            <option value="Aparatos">Aparatos / Gel</option>
+                            <option value="Venta">Venta al Público</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-toti-700 mb-1">Asignar Sucursal</label>
+                        <select id="prodBranch" class="w-full bg-toti-50 border border-toti-200 text-xs rounded-xl p-3 text-toti-800 font-medium focus:outline-none">
+                            <option value="Actual">Sucursal Actual (${currentBranch})</option>
+                            <option value="Ambas">Ambas Sucursales</option>
+                            <option value="Chascomús">Chascomús</option>
+                            <option value="Ramos Mejía">Ramos Mejía</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label id="prodPriceLabel" class="block text-xs font-semibold text-toti-700 mb-1">Costo Estimado / Uso</label>
+                        <input type="number" id="prodPrice" required min="0" placeholder="0" class="w-full bg-toti-50 border border-toti-200 text-xs rounded-xl p-3 text-toti-800 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-toti-700 mb-1">Stock Inicial</label>
+                        <input type="number" id="prodQty" required min="0" placeholder="10" class="w-full bg-toti-50 border border-toti-200 text-xs rounded-xl p-3 text-toti-800 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-toti-700 mb-1">Alerta Stock Mínimo</label>
+                        <input type="number" id="prodMin" required min="1" placeholder="3" class="w-full bg-toti-50 border border-toti-200 text-xs rounded-xl p-3 text-toti-800 focus:outline-none">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-toti-700 hover:bg-toti-800 text-white font-semibold rounded-xl text-xs uppercase tracking-wider shadow-md transition mt-2">
+                    Guardar Producto
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-toti-800 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-xs font-medium transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
+        <span id="toastMessage">Acción completada con éxito</span>
+    </div>
+
+    <script>
+        // Data Global simulada por sucursal
+        let currentBranch = 'Chascomús';
+        let currentStockType = 'gabinete';
+
+        // Servicios disponibles
+        const servicesData = [
+            {
+                id: 's1',
+                category: 'facial',
+                title: 'Tratamiento Faciales LED',
+                duration: '60 min',
+                price: 18500,
+                desc: 'Limpieza profunda con fototerapia LED, alta frecuencia e hidratación con ampollas.',
+                badge: 'Más Popular',
+                consumes: 'Ampolla Ácido Hialurónico (1u)'
+            },
+            {
+                id: 's2',
+                category: 'headspa',
+                title: 'Head Spa & Masaje Corporal',
+                duration: '90 min',
+                price: 28000,
+                desc: 'Experiencia relax completa para cuero cabelludo, cuello y espalda con óleos esenciales.',
+                badge: 'Exclusivo',
+                consumes: 'Óleo Esencial Rela x (20ml)'
+            },
+            {
+                id: 's3',
+                category: 'nails',
+                title: 'Manicuría con Capping Gel',
+                duration: '75 min',
+                price: 14000,
+                desc: 'Nivelación y fortalecimiento de uñas naturales con acabado semipermanente.',
+                badge: 'Tendencia',
+                consumes: 'Gel Capping Base (5gr)'
+            },
+            {
+                id: 's4',
+                category: 'combo',
+                title: 'Gift Card Toti Relax Día Especial',
+                duration: '120 min',
+                price: 35000,
+                desc: 'Combo Facial + Head Spa + Belleza de Pies. Incluye copa de champagne de cortesía.',
+                badge: 'Ideal Regalo',
+                consumes: 'Kit Regalo Especial'
+            },
+            {
+                id: 's5',
+                category: 'facial',
+                title: 'Dermapen & Peeling Químico',
+                duration: '60 min',
+                price: 22000,
+                desc: 'Renovación celular profunda para manchas, líneas de expresión y luminosidad.',
+                badge: 'Efecto Glow',
+                consumes: 'Peeling Mandélico (10ml)'
+            },
+            {
+                id: 's6',
+                category: 'nails',
+                title: 'Belleza de Pies Completa',
+                duration: '50 min',
+                price: 12500,
+                desc: 'Exfoliación, limado, tratamiento de cutículas y esmaltado de larga duración.',
+                badge: 'Spa Feet',
+                consumes: 'Crema Hidratante Pies (15ml)'
+            }
+        ];
+
+        // Stock de productos por sucursal
+        const stockData = {
+            'Chascomús': [
+                { id: 'st1', name: 'Ampollas Ácido Hialurónico', cat: 'Facial', type: 'gabinete', qty: 14, min: 5, price: 1200 },
+                { id: 'st2', name: 'Óleo Esencial Lavanda 250ml', cat: 'Head Spa', type: 'gabinete', qty: 3, min: 5, price: 2500 },
+                { id: 'st3', name: 'Gel Capping Base Kapping', cat: 'Uñas', type: 'gabinete', qty: 8, min: 4, price: 1800 },
+                { id: 'st4', name: 'Máscara Gel Neutro Conductores', cat: 'Aparatos', type: 'gabinete', qty: 2, min: 3, price: 950 },
+                { id: 'st5', name: 'Sérum C Vitamina (Retail)', cat: 'Venta', type: 'retail', qty: 12, min: 3, price: 14500 },
+                { id: 'st6', name: 'Crema Hidratante Noche (Retail)', cat: 'Venta', type: 'retail', qty: 4, min: 5, price: 18200 }
+            ],
+            'Ramos Mejía': [
+                { id: 'st7', name: 'Ampollas Ácido Hialurónico', cat: 'Facial', type: 'gabinete', qty: 8, min: 5, price: 1200 },
+                { id: 'st8', name: 'Óleo Esencial Lavanda 250ml', cat: 'Head Spa', type: 'gabinete', qty: 10, min: 5, price: 2500 },
+                { id: 'st9', name: 'Gel Capping Base Kapping', cat: 'Uñas', type: 'gabinete', qty: 2, min: 4, price: 1800 },
+                { id: 'st10', name: 'Máscara Gel Neutro Conductores', cat: 'Aparatos', type: 'gabinete', qty: 6, min: 3, price: 950 },
+                { id: 'st11', name: 'Sérum C Vitamina (Retail)', cat: 'Venta', type: 'retail', qty: 5, min: 3, price: 14500 },
+                { id: 'st12', name: 'Crema Hidratante Noche (Retail)', cat: 'Venta', type: 'retail', qty: 15, min: 5, price: 18200 }
+            ]
+        };
+
+        // Turnos simulados
+        const agendaData = [
+            { id: 'a1', branch: 'Chascomús', time: '09:00', client: 'Valeria González', service: 'Tratamiento Faciales LED', staff: 'Toti', status: 'Completado' },
+            { id: 'a2', branch: 'Chascomús', time: '10:30', client: 'Mariana López', service: 'Manicuría con Capping Gel', staff: 'Camila', status: 'En atención' },
+            { id: 'a3', branch: 'Chascomús', time: '14:00', client: 'Lucía Benítez', service: 'Head Spa & Masaje Corporal', staff: 'Sofía', status: 'Confirmado' },
+            { id: 'a4', branch: 'Chascomús', time: '16:30', client: 'Carolina Rossi', service: 'Gift Card Toti Relax', staff: 'Toti', status: 'Confirmado' },
+            
+            { id: 'a5', branch: 'Ramos Mejía', time: '09:30', client: 'Romina Fernández', service: 'Dermapen & Peeling Químico', staff: 'Sofía', status: 'Completado' },
+            { id: 'a6', branch: 'Ramos Mejía', time: '11:00', client: 'Giselle Martínez', service: 'Belleza de Pies Completa', staff: 'Camila', status: 'Confirmado' },
+            { id: 'a7', branch: 'Ramos Mejía', time: '15:00', client: 'Paula Soria', service: 'Tratamiento Faciales LED', staff: 'Toti', status: 'Confirmado' }
+        ];
+
+        // CRM Clientes
+        const clientsData = [
+            {
+                id: 'c1',
+                name: 'Valeria González',
+                phone: '+54 9 2241 55-4321',
+                lastVisit: 'Hoy, 09:00 hs',
+                branch: 'Chascomús',
+                skinType: 'Piel Sensible / Rosácea leve',
+                allergies: 'Alergia al Ácido Salicílico',
+                history: ['Limpieza LED (Hoy)', 'Capping Gel (12/09/2026)', 'Head Spa (01/08/2026)'],
+                beforeAfter: 'https://images.unsplash.com/photo-1512290900676-26c2a0b0e5ae?auto=format&fit=crop&w=300&q=80'
+            },
+            {
+                id: 'c2',
+                name: 'Mariana López',
+                phone: '+54 9 11 4432-8890',
+                lastVisit: 'Hoy, 10:30 hs',
+                branch: 'Ramos Mejía',
+                skinType: 'Piel Mixta / Deshidratada',
+                allergies: 'Ninguna conocida',
+                history: ['Capping Gel (Hoy)', 'Peeling Químico (15/08/2026)'],
+                beforeAfter: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=300&q=80'
+            },
+            {
+                id: 'c3',
+                name: 'Lucía Benítez',
+                phone: '+54 9 2241 60-1122',
+                lastVisit: 'Hace 2 semanas',
+                branch: 'Chascomús',
+                skinType: 'Piel Madura / Falta de Firmeza',
+                allergies: 'Sensible a fragancias sintéticas',
+                history: ['Head Spa (28/09/2026)', 'Dermapen (10/07/2026)'],
+                beforeAfter: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=300&q=80'
+            }
+        ];
+
+        window.onload = function() {
+            lucide.createIcons();
+            renderServices('all');
+            renderAgenda();
+            renderStock();
+            renderCRM();
+            initCharts();
+
+            // Setea fecha de hoy en datepickers
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('agendaDatePicker').value = today;
+            document.getElementById('modalDate').value = today;
+        };
+
+        // Cambiar Sucursal Activa
+        function switchBranch(branchName) {
+            currentBranch = branchName;
+            
+            // Sincronizar dropdowns
+            document.getElementById('branchSelectDesktop').value = branchName;
+            document.getElementById('branchSelectMobile').value = branchName;
+            
+            // Actualizar etiquetas
+            document.getElementById('currentBranchBadge').textContent = 'Sede ' + branchName;
+            document.getElementById('modalBranchName').textContent = branchName;
+            
+            document.querySelectorAll('.currentBranchText').forEach(el => {
+                el.textContent = branchName;
+            });
+
+            // Re-renderizar vistas afectadas
+            renderAgenda();
+            renderStock();
+            updateKPIs();
+
+            showToast(`Sucursal cambiada a ${branchName}`);
+        }
+
+        // Navegación de secciones
+        function showSection(sectionId) {
+            const sections = ['publicViewSection', 'agendaSection', 'stockSection', 'crmSection', 'statsSection'];
+            sections.forEach(s => {
+                document.getElementById(s).classList.add('hidden');
+            });
+
+            // Restablecer estilos en la barra de navegación
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.remove('bg-toti-100', 'font-semibold');
+            });
+
+            if (sectionId === 'publicView') {
+                document.getElementById('publicViewSection').classList.remove('hidden');
+                document.getElementById('nav-publicView').classList.add('bg-toti-100', 'font-semibold');
+            } else if (sectionId === 'agenda') {
+                document.getElementById('agendaSection').classList.remove('hidden');
+                document.getElementById('nav-agenda').classList.add('bg-toti-100', 'font-semibold');
+            } else if (sectionId === 'stock') {
+                document.getElementById('stockSection').classList.remove('hidden');
+                document.getElementById('nav-stock').classList.add('bg-toti-100', 'font-semibold');
+            } else if (sectionId === 'crm') {
+                document.getElementById('crmSection').classList.remove('hidden');
+                document.getElementById('nav-crm').classList.add('bg-toti-100', 'font-semibold');
+            } else if (sectionId === 'stats') {
+                document.getElementById('statsSection').classList.remove('hidden');
+                document.getElementById('nav-stats').classList.add('bg-toti-100', 'font-semibold');
+            }
+
+            // Ocultar sidebar en responsive tras selección
+            if (window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+            }
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        // Renderizar Servicios (Catálogo)
+        function renderServices(filter) {
+            const grid = document.getElementById('servicesGrid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'all' 
+                ? servicesData 
+                : servicesData.filter(s => s.category === filter);
+
+            filtered.forEach(s => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-3xl p-6 border border-toti-200 shadow-sm hover:shadow-md transition flex flex-col justify-between group relative overflow-hidden';
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="px-3 py-1 bg-toti-100 text-toti-800 text-[11px] font-bold rounded-full uppercase tracking-wider">${s.badge}</span>
+                            <span class="text-xs text-toti-500 font-medium flex items-center gap-1">
+                                <i data-lucide="clock" class="w-3.5 h-3.5"></i> ${s.duration}
+                            </span>
+                        </div>
+                        <h3 class="font-serif text-xl font-bold text-toti-800 group-hover:text-toti-600 transition mb-2">${s.title}</h3>
+                        <p class="text-xs text-toti-600 leading-relaxed mb-4">${s.desc}</p>
+                    </div>
+                    <div class="pt-4 border-t border-toti-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] uppercase text-toti-400 block font-semibold">Valor</span>
+                            <span class="text-xl font-bold text-toti-800">$${s.price.toLocaleString('es-AR')}</span>
+                        </div>
+                        <button onclick="openBookingModal('${s.id}')" class="px-4 py-2 bg-toti-700 hover:bg-toti-800 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-sm transition">
+                            <span>Reservar Turno</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function filterServices(category) {
+            document.querySelectorAll('.service-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-toti-800');
+                btn.classList.add('bg-white/20', 'text-white');
+            });
+            event.target.classList.remove('bg-white/20', 'text-white');
+            event.target.classList.add('bg-white', 'text-toti-800');
+            renderServices(category);
+        }
+
+        // Renderizar Agenda
+        function renderAgenda(staffFilter = 'all') {
+            const list = document.getElementById('agendaList');
+            list.innerHTML = '';
+
+            let filtered = agendaData.filter(a => a.branch === currentBranch);
+            if (staffFilter !== 'all') {
+                filtered = filtered.filter(a => a.staff === staffFilter);
+            }
+
+            if (filtered.length === 0) {
+                list.innerHTML = `<div class="p-8 text-center text-toti-500 text-xs">No hay turnos programados para esta sucursal o profesional.</div>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                let statusBadge = '';
+                if (item.status === 'Completado') {
+                    statusBadge = `<span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-bold">Completado</span>`;
+                } else if (item.status === 'En atención') {
+                    statusBadge = `<span class="px-2.5 py-1 bg-amber-100 text-amber-700 rounded-full text-[10px] font-bold animate-pulse">En atención</span>`;
+                } else {
+                    statusBadge = `<span class="px-2.5 py-1 bg-toti-100 text-toti-800 rounded-full text-[10px] font-bold">Confirmado</span>`;
+                }
+
+                const row = document.createElement('div');
+                row.className = 'p-4 hover:bg-toti-50/50 transition flex items-center justify-between';
+                row.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="text-center font-bold text-toti-800 w-12 text-sm bg-toti-100/60 p-2 rounded-xl">
+                            ${item.time}
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-sm text-toti-800">${item.client}</h4>
+                            <p class="text-xs text-toti-600">${item.service} &bull; <span class="font-medium text-toti-700">Atiende: ${item.staff}</span></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        ${statusBadge}
+                        <button onclick="completeAppointment('${item.id}', '${item.service}')" class="p-2 text-toti-600 hover:bg-toti-100 rounded-lg" title="Finalizar turno y descontar stock">
+                            <i data-lucide="check-square" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                list.appendChild(row);
+            });
+            lucide.createIcons();
+        }
+
+        function filterAgendaByStaff(staff) {
+            document.querySelectorAll('.staff-filter-btn').forEach(btn => {
+                btn.classList.remove('bg-toti-700', 'text-white');
+                btn.classList.add('bg-white', 'text-toti-700');
+            });
+            event.target.classList.remove('bg-white', 'text-toti-700');
+            event.target.classList.add('bg-toti-700', 'text-white');
+            renderAgenda(staff);
+        }
+
+        // Renderizar Stock
+        function renderStock() {
+            const tableBody = document.getElementById('stockTableBody');
+            tableBody.innerHTML = '';
+
+            const list = stockData[currentBranch].filter(item => item.type === currentStockType);
+
+            let lowCount = 0;
+            list.forEach(item => {
+                if (item.qty <= item.min) lowCount++;
+
+                let statusTag = '';
+                if (item.qty === 0) {
+                    statusTag = `<span class="px-2 py-0.5 bg-red-100 text-red-700 rounded text-[10px] font-bold">Agotado</span>`;
+                } else if (item.qty <= item.min) {
+                    statusTag = `<span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-[10px] font-bold">Stock Bajo</span>`;
+                } else {
+                    statusTag = `<span class="px-2 py-0.5 bg-green-100 text-green-700 rounded text-[10px] font-bold">OK</span>`;
+                }
+
+                const priceDisplay = item.type === 'retail' 
+                    ? `$${(item.price || 0).toLocaleString('es-AR')}` 
+                    : `$${(item.price || 0).toLocaleString('es-AR')} /uso`;
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-toti-50/50';
+                tr.innerHTML = `
+                    <td class="p-4 font-semibold text-toti-800">${item.name}</td>
+                    <td class="p-4 text-toti-600">${item.cat}</td>
+                    <td class="p-4 text-toti-600"><span class="capitalize">${item.type}</span> &bull; ${currentBranch}</td>
+                    <td class="p-4 font-bold text-sm text-toti-800">${item.qty} un.</td>
+                    <td class="p-4 font-semibold text-toti-700">${priceDisplay}</td>
+                    <td class="p-4">${statusTag}</td>
+                    <td class="p-4 text-center">
+                        <div class="flex justify-center items-center gap-1.5">
+                            <button onclick="adjustStock('${item.id}', -1)" class="w-7 h-7 bg-toti-100 hover:bg-toti-200 text-toti-800 rounded-lg flex items-center justify-center font-bold text-sm">-</button>
+                            <button onclick="adjustStock('${item.id}', 1)" class="w-7 h-7 bg-toti-100 hover:bg-toti-200 text-toti-800 rounded-lg flex items-center justify-center font-bold text-sm">+</button>
+                            <button onclick="editProduct('${item.id}')" class="p-1.5 text-toti-600 hover:bg-toti-100 rounded-lg ml-1" title="Editar producto">
+                                <i data-lucide="edit-3" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            document.getElementById('totalStockCount').textContent = list.length;
+            document.getElementById('lowStockCount').textContent = `${lowCount} insumos`;
+            lucide.createIcons();
+        }
+
+        function togglePriceCostLabel() {
+            const type = document.getElementById('prodType').value;
+            const label = document.getElementById('prodPriceLabel');
+            label.textContent = type === 'retail' ? 'Precio de Venta ($)' : 'Costo Estimado / Uso ($)';
+        }
+
+        function openProductModal() {
+            document.getElementById('prodEditId').value = '';
+            document.getElementById('productModalTitle').textContent = 'Nuevo Producto / Insumo';
+            document.getElementById('prodName').value = '';
+            document.getElementById('prodType').value = currentStockType;
+            document.getElementById('prodCat').value = currentStockType === 'retail' ? 'Venta' : 'Facial';
+            document.getElementById('prodBranch').value = currentBranch;
+            document.getElementById('prodPrice').value = '';
+            document.getElementById('prodQty').value = '';
+            document.getElementById('prodMin').value = '3';
+            togglePriceCostLabel();
+            document.getElementById('productModal').classList.remove('hidden');
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.add('hidden');
+        }
+
+        function editProduct(prodId) {
+            const prod = stockData[currentBranch].find(p => p.id === prodId);
+            if (!prod) return;
+
+            document.getElementById('prodEditId').value = prod.id;
+            document.getElementById('productModalTitle').textContent = 'Editar Producto / Insumo';
+            document.getElementById('prodName').value = prod.name;
+            document.getElementById('prodType').value = prod.type;
+            document.getElementById('prodCat').value = prod.cat;
+            document.getElementById('prodBranch').value = currentBranch;
+            document.getElementById('prodPrice').value = prod.price || 0;
+            document.getElementById('prodQty').value = prod.qty;
+            document.getElementById('prodMin').value = prod.min;
+
+            togglePriceCostLabel();
+            document.getElementById('productModal').classList.remove('hidden');
+        }
+
+        function saveProduct(e) {
+            e.preventDefault();
+            const editId = document.getElementById('prodEditId').value;
+            const name = document.getElementById('prodName').value;
+            const type = document.getElementById('prodType').value;
+            const cat = document.getElementById('prodCat').value;
+            const targetBranch = document.getElementById('prodBranch').value;
+            const price = parseFloat(document.getElementById('prodPrice').value) || 0;
+            const qty = parseInt(document.getElementById('prodQty').value) || 0;
+            const min = parseInt(document.getElementById('prodMin').value) || 1;
+
+            const branchesToUpdate = (targetBranch === 'Ambas') 
+                ? ['Chascomús', 'Ramos Mejía'] 
+                : [(targetBranch === 'Actual' ? currentBranch : targetBranch)];
+
+            branchesToUpdate.forEach(b => {
+                if (!stockData[b]) return;
+                
+                if (editId) {
+                    // Editar existente
+                    const existing = stockData[b].find(p => p.id === editId);
+                    if (existing) {
+                        existing.name = name;
+                        existing.type = type;
+                        existing.cat = cat;
+                        existing.price = price;
+                        existing.qty = qty;
+                        existing.min = min;
+                    }
+                } else {
+                    // Crear nuevo
+                    stockData[b].unshift({
+                        id: 'st' + Date.now() + Math.random().toString(36).substr(2, 4),
+                        name: name,
+                        type: type,
+                        cat: cat,
+                        price: price,
+                        qty: qty,
+                        min: min
+                    });
+                }
+            });
+
+            currentStockType = type;
+            toggleStockType(type);
+            closeProductModal();
+            showToast(editId ? `"${name}" editado correctamente` : `"${name}" agregado al inventario`);
+        }
+
+        function toggleStockType(type) {
+            currentStockType = type;
+            if (type === 'gabinete') {
+                document.getElementById('stockTypeGabineteBtn').className = 'px-3.5 py-2 rounded-xl text-xs font-semibold bg-toti-700 text-white';
+                document.getElementById('stockTypeRetailBtn').className = 'px-3.5 py-2 rounded-xl text-xs font-semibold bg-toti-100 text-toti-700';
+            } else {
+                document.getElementById('stockTypeRetailBtn').className = 'px-3.5 py-2 rounded-xl text-xs font-semibold bg-toti-700 text-white';
+                document.getElementById('stockTypeGabineteBtn').className = 'px-3.5 py-2 rounded-xl text-xs font-semibold bg-toti-100 text-toti-700';
+            }
+            renderStock();
+        }
+
+        function adjustStock(itemId, delta) {
+            const item = stockData[currentBranch].find(i => i.id === itemId);
+            if (item) {
+                item.qty = Math.max(0, item.qty + delta);
+                renderStock();
+                showToast(`Stock de "${item.name}" actualizado a ${item.qty} unidades`);
+            }
+        }
+
+        // Renderizar CRM
+        function renderCRM(filterText = '') {
+            const grid = document.getElementById('crmClientsGrid');
+            grid.innerHTML = '';
+
+            const filtered = clientsData.filter(c => 
+                c.name.toLowerCase().includes(filterText.toLowerCase())
+            );
+
+            filtered.forEach(c => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-3xl p-6 border border-toti-200 shadow-sm flex flex-col justify-between';
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="w-10 h-10 rounded-full bg-toti-100 border border-toti-300 flex items-center justify-center font-serif font-bold text-toti-700 text-lg">
+                                ${c.name.charAt(0)}
+                            </div>
+                            <span class="text-[10px] bg-toti-50 text-toti-600 px-2.5 py-1 rounded-full font-semibold border border-toti-200">${c.branch}</span>
+                        </div>
+                        <h3 class="font-bold text-base text-toti-800">${c.name}</h3>
+                        <p class="text-xs text-toti-500 mb-3">${c.phone}</p>
+                        
+                        <div class="space-y-2 text-xs border-t border-b border-toti-100 py-3 my-3">
+                            <div>
+                                <span class="text-toti-400 block text-[10px] uppercase font-semibold">Tipo de Piel</span>
+                                <span class="font-medium text-toti-700">${c.skinType}</span>
+                            </div>
+                            <div>
+                                <span class="text-toti-400 block text-[10px] uppercase font-semibold">Alergias / Observaciones</span>
+                                <span class="font-medium text-rose-600">${c.allergies}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="openCrmModal('${c.id}')" class="w-full py-2 bg-toti-50 hover:bg-toti-100 text-toti-800 rounded-xl text-xs font-semibold transition border border-toti-200 flex items-center justify-center gap-2">
+                        <i data-lucide="file-text" class="w-4 h-4 text-toti-600"></i>
+                        <span>Ver Ficha Completa & Fotos</span>
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function searchClients() {
+            const query = document.getElementById('searchClientInput').value;
+            renderCRM(query);
+        }
+
+        function openCrmModal(clientId) {
+            const client = clientsData.find(c => c.id === clientId);
+            if (!client) return;
+
+            const modalContent = document.getElementById('crmModalContent');
+            modalContent.innerHTML = `
+                <div class="text-center mb-4">
+                    <div class="w-16 h-16 rounded-full bg-toti-100 border-2 border-toti-300 flex items-center justify-center mx-auto mb-2 font-serif font-bold text-2xl text-toti-800">
+                        ${client.name.charAt(0)}
+                    </div>
+                    <h3 class="font-serif text-2xl font-bold text-toti-800">${client.name}</h3>
+                    <p class="text-xs text-toti-500">${client.phone} &bull; Sede habitual: ${client.branch}</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-toti-50 p-4 rounded-2xl border border-toti-200">
+                        <h4 class="text-xs font-bold text-toti-800 uppercase tracking-wider mb-2">Diagnóstico Cosmiátrico</h4>
+                        <p class="text-xs text-toti-700"><strong>Piel:</strong> ${client.skinType}</p>
+                        <p class="text-xs text-rose-700 mt-1"><strong>Alergias:</strong> ${client.allergies}</p>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold text-toti-800 uppercase tracking-wider mb-2">Registro Antes / Después (Última Sesión)</h4>
+                        <div class="relative rounded-2xl overflow-hidden border border-toti-200 h-48 bg-gray-100">
+                            <img src="${client.beforeAfter}" alt="Seguimiento Estético" class="w-full h-full object-cover">
+                            <span class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded backdrop-blur">Sesión Limpieza LED + Ampolla</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold text-toti-800 uppercase tracking-wider mb-2">Historial de Tratamientos</h4>
+                        <ul class="space-y-1.5 text-xs text-toti-700">
+                            ${client.history.map(h => `<li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-toti-600"></i> ${h}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+            document.getElementById('crmModal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeCrmModal() {
+            document.getElementById('crmModal').classList.add('hidden');
+        }
+
+        // Modales de Reserva
+        function openBookingModal(serviceId = null) {
+            const select = document.getElementById('modalServiceSelect');
+            select.innerHTML = '';
+            
+            servicesData.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.title;
+                opt.textContent = `${s.title} ($${s.price.toLocaleString('es-AR')})`;
+                if (s.id === serviceId) opt.selected = true;
+                select.appendChild(opt);
+            });
+
+            document.getElementById('bookingModal').classList.remove('hidden');
+        }
+
+        function closeBookingModal() {
+            document.getElementById('bookingModal').classList.add('hidden');
+        }
+
+        function confirmBooking(e) {
+            e.preventDefault();
+            const client = document.getElementById('modalClientName').value;
+            const service = document.getElementById('modalServiceSelect').value;
+            const time = document.getElementById('modalTime').value;
+            const staff = document.getElementById('modalStaff').value;
+
+            agendaData.unshift({
+                id: 'a' + Date.now(),
+                branch: currentBranch,
+                time: time,
+                client: client,
+                service: service,
+                staff: staff,
+                status: 'Confirmado'
+            });
+
+            renderAgenda();
+            closeBookingModal();
+            showToast(`¡Turno reservado con éxito para ${client}!`);
+        }
+
+        function completeAppointment(id, serviceTitle) {
+            const app = agendaData.find(a => a.id === id);
+            if (app) {
+                app.status = 'Completado';
+                renderAgenda();
+
+                // Autodescuento simulado de stock de gabinete
+                const matchedService = servicesData.find(s => s.title === serviceTitle);
+                if (matchedService) {
+                    const firstGabineteStock = stockData[currentBranch].find(i => i.type === 'gabinete');
+                    if (firstGabineteStock && firstGabineteStock.qty > 0) {
+                        firstGabineteStock.qty -= 1;
+                        renderStock();
+                        showToast(`Turno completado. Se descontó automáticamente 1 un. de insumo en gabinete.`);
+                        return;
+                    }
+                }
+                showToast(`Turno completado para ${app.client}`);
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function updateKPIs() {
+            if (currentBranch === 'Chascomús') {
+                document.getElementById('kpiRevenue').textContent = '$1.480.000';
+                document.getElementById('kpiAppointments').textContent = '142';
+                document.getElementById('kpiTopService').textContent = 'Limpieza Facial Premium';
+                document.getElementById('kpiOccupancy').textContent = '87%';
+            } else {
+                document.getElementById('kpiRevenue').textContent = '$1.820.000';
+                document.getElementById('kpiAppointments').textContent = '168';
+                document.getElementById('kpiTopService').textContent = 'Head Spa & Masaje';
+                document.getElementById('kpiOccupancy').textContent = '92%';
+            }
+        }
+
+        // Gráficos con Chart.js
+        function initCharts() {
+            const ctx1 = document.getElementById('servicesChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Faciales LED', 'Head Spa', 'Capping Gel', 'Gift Cards', 'Dermapen'],
+                    datasets: [{
+                        label: 'Sesiones realizadas',
+                        data: [48, 32, 29, 18, 15],
+                        backgroundColor: '#b08668',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f4ece5' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            const ctx2 = document.getElementById('branchesChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Chascomús', 'Ramos Mejía'],
+                    datasets: [{
+                        data: [1480000, 1820000],
+                        backgroundColor: ['#c3a085', '#7e5743']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
